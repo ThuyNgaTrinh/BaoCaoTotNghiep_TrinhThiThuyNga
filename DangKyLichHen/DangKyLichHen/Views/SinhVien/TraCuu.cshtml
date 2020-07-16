@@ -1,0 +1,201 @@
+﻿
+@{
+    ViewBag.Title = "TraCuu";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<script src="~/Content/bower_components/ckeditor/ckeditor.js"></script>
+<script src="~/Content/bower_components/ckeditor/styles.js"></script>
+<section class="content">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Trạng thái lịch hẹn:</label>
+                <select class="form-control" id="loai_ft" onchange="filter()">
+                    <option selected value="">Chọn trạng thái lịch hẹn</option>
+                    <option value="Chờ xác nhận">Chờ xác nhận</option>
+                    <option value="Đã xác nhận">Đã xác nhận</option>
+                    <option value="Từ chối">Từ chối</option>
+                </select>
+            </div>
+        </div> 
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Giờ hẹn:</label>
+                <select class="form-control" id="gio_ft" onchange="filter()">
+                    <option selected value="">Chọn giờ hẹn</option>
+                    <option value="7">7 giờ</option>
+                    <option value="8">8 giờ</option>
+                    <option value="9">9 giờ</option>
+                    <option value="10">10 giờ</option>
+                    <option value="11">11 giờ</option>
+                    <option value="12">12 giờ</option>
+                    <option value="13">13 giờ</option>
+                    <option value="14">14 giờ</option>
+                    <option value="15">15 giờ</option>
+                    <option value="16">16 giờ</option>
+                    <option value="17">17 giờ</option>
+                </select>
+            </div>
+        </div>           
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Nội dung hẹn:</label>
+                <input type="text" class="form-control" id="noidung_ft" onkeyup="filter()" />
+            </div>
+        </div>   
+       
+    </div>
+    <div class="row">
+        <div class="form-group row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-body">
+                        <table id="maintable" class="table table-striped table-hover" style="width:100%;z-index: -1"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="/Content/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/Content/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- DataTables -->
+<script src="/Content/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/Content/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="/Content/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/Content/bower_components/fastclick/lib/fastclick.js"></script>
+<script src="/Content/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script>
+    var DSLH;
+    var Selected_ID;
+    function khoitao() {
+    }
+    $(document).ready(function () {
+        LichHen_load_list();
+        $('#loai_ft').change(function () {
+            table.draw();
+            $.fn.dataTable.ext.search.pop();
+        });
+        $('#gio_ft').change(function () {
+            table.draw();
+            $.fn.dataTable.ext.search.pop();
+        });
+        $('#noidung_ft').keyup(function () {
+            table.draw();
+            $.fn.dataTable.ext.search.pop();
+        });
+    });
+    function LichHen_load_list() {
+        $.ajax({
+            type: "GET",
+            url: "/Home/LichHen_load_listSV",
+            dataType: "json",
+            success: function (dt) {
+                for (var i = 0; i < dt.length; i++) {
+                    dt[i].Ngay_hen = dt[i].Ngay_hen.substring(0, 10);
+                    if (dt[i].Active == "0") {
+                        dt[i].Active = "Chờ xác nhận"
+                    }
+                    if (dt[i].Active == "1") {
+                        dt[i].Active = "Đã xác nhận"
+                    }
+                    if (dt[i].Active == "2") {
+                        dt[i].Active = "Từ chối"
+                    }
+                }
+                DSLH = dt;
+                document.getElementById("maintable").innerHTML = "";
+                filldata('maintable', dt);
+            }
+        });
+    }
+    function filldata(table_id, data) {
+        var dataSet = new Array;
+
+        $.each(data,
+            function (index, value) {
+                var tempArray = new Array;
+                for (var o in value) {
+                    tempArray.push(value[o]);
+                }
+                dataSet.push(tempArray);
+            });
+
+        table = $('#' + table_id + '').DataTable({
+            'select': true,
+            "destroy": true,
+            data: dataSet,
+            "oLanguage": {
+
+                "sProcessing": "Đang xử lý...",
+                "sLengthMenu": "Xem _MENU_ mục",
+                "sZeroRecords": "Không có dữ liệu!",
+                "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                "sInfoPostFix": "",
+                "sSearch": "Tìm kiếm nhanh:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "Đầu",
+                    "sPrevious": "Trước",
+                    "sNext": "Tiếp",
+                    "sLast": "Cuối"
+
+                }
+            },
+            columns: [
+                { title: "ID", "visible": false },
+                { title: "ID", "visible": false },
+                { title: "Nội dung hẹn " },
+                { title: "ID sinh viên", "visible": false },
+                { title: "Tên sinh viên" },
+                { title: "ID giáo viên", "visible": false },
+                { title: "Tên giáo viên" },
+                { title: "Ngày hẹn" },
+                { title: "Giờ hẹn" },
+                { title: "Trạng thái" },
+                { title: "Lý do huỷ" },
+            ],
+            "order": [[0, "asc"]]
+        });
+    };
+    function filter() {
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                debugger
+                var Loai = $('#loai_ft').val();
+                var Gio = $('#gio_ft').val();
+                var NoiDung = $('#noidung_ft').val();
+                var loaidt = data[9];
+                var giodt = data[8];
+                var noidungdt = data[2];
+                var bool1;
+                var bool2;
+                var bool3 = (Remove_VN(noidungdt).toLowerCase().includes(Remove_VN(NoiDung).toLowerCase()));
+                if (Loai != "") {
+                    bool1 = (loaidt == Loai);
+                } else {
+                    bool1 = true;
+                }
+                if (Gio != "") {
+                    bool2 = (giodt == Gio);
+                } else {
+                    bool2 = true;
+                }
+                if (bool1 && bool2&&bool3) {
+                    return true;
+                }
+                return false;
+            }
+        );
+    }
+</script>

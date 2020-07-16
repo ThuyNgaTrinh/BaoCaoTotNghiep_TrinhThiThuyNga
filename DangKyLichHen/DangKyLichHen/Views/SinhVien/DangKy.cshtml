@@ -1,0 +1,268 @@
+﻿
+@{
+    ViewBag.Title = "DangKy";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<section class="content">
+
+    <div class="row" style="">
+        <div class="form-group row">
+            <div class="col-md-12">
+                <div class="box box-solid box-primary">
+                    <div class="box-header with-border ">
+                        <h3 class="box-title">Thông tin phiếu đề nghị</h3>
+                        <div class="box-tools pull-right">
+                            <!-- Collapse Button -->
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                        <!-- /.box-tools -->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body ">
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Mã sinh viên:</label>
+                                        <input type="text" disabled class="form-control" id="Ma_sinh_vien">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Giảng viên :</label>
+                                        <select class="form-control" id="ID_giang_vien" onchange="loadlichhen()">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tableln" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table id="maintable2" class="table table-striped table-hover" style="width:100%;z-index: -1"></table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Giờ hẹn:</label>
+                                            <select class="form-control" id="Gio_hen">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label style="color:red">(*)Vì vấn đề an toàn của giảng viên và sinh viên, tất cả các cuộc hẹn sẽ diễn ra trong khuôn viên trường học</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Nội dung, lý do cuộc hẹn:</label>
+                                        <div class="">
+                                            <textarea rows="3" style="width:100%" name="comment" form="usrform" id="Noi_dung_hen" placeholder=""></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="center-block" style="text-align: center">
+        <button class="btn btn-danger" onclick="Send()">Đặt lịch hẹn</button>
+    </div>
+</section>
+<script src="/Content/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script>
+    function khoitao() {
+
+    }
+    $(document).ready(function () {
+        Load_thong_tin();
+        var html = '';
+        for (var i = 7; i < 18; i++) {
+            html += '<option value="' + i + '">' + i + ' giờ' + '</option>';
+        }
+        $('#Gio_hen').html(html);
+
+      
+    });
+    var SV;
+    var ngayhen;
+    var ID_sv;
+    function Load_thong_tin() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/Load_thong_tinSV",
+            dataType: "json",
+            success: function (dt) {
+                SV = dt;
+                ID_sv = dt[0].ID;
+                $('#Ma_sinh_vien').val(dt[0].Ma_sv);
+                Load_giang_vien()
+            },
+            complete: function (data) {
+            },
+            error: function (err) {
+            }
+        });
+    }
+    function Load_giang_vien() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/Load_thong_tinGV",
+            dataType: "json",
+            success: function (dt) {
+                var html = '';
+                html += '<option value="0">Vui lòng chọn</option>';
+                if (dt.length > 0) {
+                    for (var k in dt) {
+                        html += '<option value="' + dt[k].ID + '">' + dt[k].Ten_gv + '</option>';
+                    };
+                } else {
+                    html += '<option value=""> Không có dữ liệu </option>';
+                }
+                $('#ID_giang_vien').html(html);
+            },
+            complete: function (data) {
+            },
+            error: function (err) {
+            }
+        });
+    }
+    function Send() {
+        ID_giang_vien = $('#ID_giang_vien').val();
+        Noi_dung_hen = $('#Noi_dung_hen').val();
+        Gio_hen = $('#Gio_hen').val();
+        if (ID_giang_vien == "0") {
+            alert("Vui lòng chọn giảng viên ");
+        } else if (ngayhen == "") {
+            alert("Bạn chưa ngọn ngày hẹn");
+        } else {
+            var data = new FormData();
+            data.append("ID_sv", ID_sv);
+            data.append("ID_gv", ID_giang_vien);
+            data.append("Noi_dung_hen", Noi_dung_hen);
+            data.append("Ngay_hen", ngayhen);
+            data.append("Gio_hen", Gio_hen);
+            $.ajax({
+                type: "POST",
+                url: "/Home/LichHen_insert",
+                dataType: "json",
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (dt) {
+                    alert(dt);
+                    $('#Noi_dung_hen').val('');
+                    table = $('#maintable2').DataTable();                       
+                    table.$('tr.selected').removeClass('selected');
+                    ngayhen = '';
+                    
+                },
+                complete: function (data) {
+
+                },
+                error: function (err) {
+                }
+            });
+        }
+    }
+    function loadlichhen() {
+        ID_GV = $('#ID_giang_vien').val();
+        if (ID_GV != "0") {
+            $('#tableln').show();
+        } else {
+            $('#tableln').hide();
+        }
+        $.ajax({
+            type: "POST",
+            url: "/Home/GiaoVien_load_lichnghi_ID",
+            dataType: "json",
+            data: {
+                ID: ID_GV
+            },
+            success: function (dt) {
+                for (var i = 0; i < dt.length; i++) {
+                    dt[i].Ngay_nghi = dt[i].Ngay_nghi.substring(0, 10)
+                }
+                document.getElementById("maintable2").innerHTML = "";
+                filldata2('maintable2', dt);
+            }
+        });
+    }
+    function filldata2(table_id, data) {
+        var dataSet = new Array;
+
+        $.each(data,
+            function (index, value) {
+                var tempArray = new Array;
+                for (var o in value) {
+                    tempArray.push(value[o]);
+                }
+                dataSet.push(tempArray);
+            });
+
+        table = $('#' + table_id + '').DataTable({
+            'select': true,
+            "destroy": true,
+            "searching": false,
+            "info": false,
+            "lengthChange": false,
+            "pageLength": 7,
+            data: dataSet,
+            "oLanguage": {
+                
+                "sProcessing": "Đang xử lý...",
+                "sLengthMenu": "Xem _MENU_ mục",
+                "sZeroRecords": "Giảng viên không có lịch nghỉ trống!",
+                "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                "sInfoPostFix": "",
+                "sSearch": "Tìm kiếm nhanh:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "Đầu",
+                    "sPrevious": "Trước",
+                    "sNext": "Tiếp",
+                    "sLast": "Cuối"
+
+                }
+            },
+            columns: [
+                { title: "ID", "visible": false },
+                { title: "ID", "visible": false },
+                { title: "Chọn ngày hẹn", className: "dt-center", }
+            ],
+
+            "order": [[0, "asc"]]
+        }); 
+        $('#maintable2 tbody').on('click', 'tr', function () {
+            var e = $(this).find("td").text();
+            ngayhen = e;
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            }
+            else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+
+        $('#button').click(function () {
+            table.row('.selected').remove().draw(false);
+        });
+    };
+</script>

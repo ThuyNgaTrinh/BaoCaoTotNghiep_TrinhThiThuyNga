@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="linq">
+  <DataContextMoniker Name="/linqDataContext" />
+  <nestedChildShapes>
+    <classShape Id="2c67cff2-92a2-41e3-a63e-1fc9504f5166" absoluteBounds="0.75, 0.75, 2, 2.7324039713541666">
+      <DataClassMoniker Name="/linqDataContext/tb_giaovien" />
+      <nestedChildShapes>
+        <elementListCompartment Id="245e8c3e-ec8f-48b5-a551-6a66b659bdbe" absoluteBounds="0.765, 1.21, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="468ed1a4-334a-4263-b76c-b39cdc13c19e" absoluteBounds="3.75, 0.75, 2, 1.9631982421875">
+      <DataClassMoniker Name="/linqDataContext/tb_user" />
+      <nestedChildShapes>
+        <elementListCompartment Id="8a3ce42a-a512-439a-8c87-3a2567ff372e" absoluteBounds="3.765, 1.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f8ed994e-536e-4ef5-99d7-16fa1ead5416" absoluteBounds="6.75, 0.75, 2, 2.9247054036458326">
+      <DataClassMoniker Name="/linqDataContext/tb_sinhvien" />
+      <nestedChildShapes>
+        <elementListCompartment Id="9a07d5fb-9064-4610-a920-0667236d3245" absoluteBounds="6.765, 1.21, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d1fa4e4f-4494-4d2c-adb9-e7f2b0a39448" absoluteBounds="3.625, 3, 2, 3.3093082682291666">
+      <DataClassMoniker Name="/linqDataContext/tb_lichhen" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c7f3bdd7-bffa-4eba-8a48-dbe8ce1d3053" absoluteBounds="3.6399999999999997, 3.46, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="2ef4d981-3659-4b44-a721-e3bb95a7deb1" absoluteBounds="6.5, 4.25, 2, 1.3862939453125">
+      <DataClassMoniker Name="/linqDataContext/tb_lichnghi" />
+      <nestedChildShapes>
+        <elementListCompartment Id="fdab4025-5e11-4b45-9b55-ab02196e9b3a" absoluteBounds="6.515, 4.71, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

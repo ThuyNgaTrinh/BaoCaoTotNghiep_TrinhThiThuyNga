@@ -1,0 +1,410 @@
+﻿
+@{
+    ViewBag.Title = "DangKy";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+
+<script src="~/Content/bower_components/ckeditor/ckeditor.js"></script>
+<script src="~/Content/bower_components/ckeditor/styles.js"></script>
+<section class="content">
+    <div class="row" style="">
+        <div class="form-group row">
+            <div class="col-md-12">
+                <div class="box box-solid box-primary">
+                    <div class="box-header with-border ">
+                        <h3 class="box-title" style="margin-left:45%">Thông tin bản thân</h3>
+                        <div class="box-tools pull-right">
+                            <!-- Collapse Button -->
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                        <!-- /.box-tools -->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body ">
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Mã giảng viên:</label>
+                                        <input type="text" readonly class="form-control" id="Ma_giang_vien_u">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tên giảng viên(*):</label>
+                                        <input type="text" class="form-control" id="Ten_giang_vien_u">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>SĐT:</label>
+                                        <input type="tel" class="form-control" id="SDT_u">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Email:</label>
+                                        <input type="email" class="form-control" id="Email_u">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Ngày sinh(*):</label>
+                                        <input type="date" class="form-control" id="Ngay_sinh_u">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Giới tính:</label>
+                                        <select class="form-control" id="Gioi_tinh_u">
+                                            <option value="Nam" selected>Nam</option>
+                                            <option value="Nữ">Nữ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>&nbsp;</label>
+                                    <button class="form-control" style="background-color: #3c8dbc;color:white" onclick="Update()">Lưu thông tin cá nhân</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="">
+        <div class="form-group row">
+            <div class="col-md-12">
+                <div class="box box-solid box-primary">
+                    <div class="box-header with-border ">
+                        <h3 class="box-title" style="margin-left:45%">Thông tin lịch nghỉ</h3>
+                        <div class="box-tools pull-right">
+                            <!-- Collapse Button -->
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body ">
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <label>Ngày nghỉ:</label>
+                                        <input type="date" class="form-control" id="ngay_nghi">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>&nbsp;</label>
+                                    <button id="btnaddnews" onclick="insertCT()" type="button" class="form-control"  style="background-color: #3c8dbc;color:white"><i class="fas fa-plus"></i> Thêm</button>
+                                </div>
+                            </div><div class="row">
+                                    <div class="col-md-12">
+                                        <table id="maintable2" class="table table-striped table-hover" style="width:100%;z-index: -1"></table>
+                                   
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="center-block" style="text-align: center">
+            <button class="btn btn-danger" onclick="Send()">Lưu đơn hàng</button>
+        </div>*@
+</section>
+<script src="/Content/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/Content/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- DataTables -->
+<script src="/Content/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/Content/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="/Content/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/Content/bower_components/fastclick/lib/fastclick.js"></script>
+<script src="/Content/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script>
+    var DSSV;
+    var Selected_ID2;
+    function khoitao() {
+    }
+    $(document).ready(function () {
+         $.ajax({
+                    type: "GET",
+                    url: "/Home/Get_GV",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.USER_NAME == null) {
+                             window.location.href = "@Url.Action("GiaoVien", "Login")";
+                        } else {
+                            GiaoVien_load_list();
+                        }
+
+                    }
+                });
+
+    });
+    function GiaoVien_load_list() {
+        $.ajax({
+            type: "GET",
+            url: "/Home/GiaoVien_load_ID",
+            dataType: "json",
+            success: function (dt) {
+                for (var i = 0; i < dt.length; i++) {
+                    dt[i].Ngay_sinh = dt[i].Ngay_sinh.substring(0, 10);
+                }
+                $('#Ma_giang_vien_u').val(dt[0].Ma_gv);
+                $('#Ten_giang_vien_u').val(dt[0].Ten_gv);
+                $('#SDT_u').val(dt[0].Sđt);
+                $('#Email_u').val(dt[0].Email);
+                $('#Ngay_sinh_u').val(dt[0].Ngay_sinh.split("/").reverse().join("-"));
+                $('#Gioi_tinh_u').val(dt[0].Gioi_tinh);
+                DSSV = dt;
+                ListLichNghi();
+            }
+        });
+    }
+    function ListLichNghi() {
+        $.ajax({
+            type: "GET",
+            url: "/Home/GiaoVien_load_lichnghi",
+            dataType: "json",
+            success: function (dt) {
+                for (var i = 0; i < dt.length; i++) {
+                    dt[i].Ngay_nghi = dt[i].Ngay_nghi.substring(0, 10)
+                }
+                document.getElementById("maintable2").innerHTML = "";
+                filldata2('maintable2', dt);
+            }
+        });
+    }
+    function Update() {
+        if ($('#Ma_giang_vien_u').val() == "" || $('#Ten_giang_vien_u').val() == "" || $('#Ngay_sinh_u').val() == "") {
+            alert("Mã, tên và ngày sinh không được để trống")
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "/Home/GiaoVien_update_thongtin",
+                dataType: "json",
+                data: {
+                    'Ma_gv': $('#Ma_giang_vien_u').val(),
+                    'Ten_gv': $('#Ten_giang_vien_u').val(),
+                    'Gioi_tinh': $('#Gioi_tinh_u').val(),
+                    'Ngay_sinh': $('#Ngay_sinh_u').val(),
+                    'Email': $('#Email_u').val(),
+                    'Sđt': $('#SDT_u').val(),
+                },
+                success: function (dt) {
+                    GiaoVien_load_list();
+                    alert(dt);
+
+                },
+                complete: function (data) {
+
+                },
+                error: function (err) {
+                }
+            });
+        }
+    }
+    function filldata2(table_id, data) {
+        var dataSet = new Array;
+
+        $.each(data,
+            function (index, value) {
+                var tempArray = new Array;
+                for (var o in value) {
+                    tempArray.push(value[o]);
+                }
+                dataSet.push(tempArray);
+            });
+
+        table = $('#' + table_id + '').DataTable({
+            'select': true,
+            "destroy": true,
+            data: dataSet,
+            "oLanguage": {
+
+                "sProcessing": "Đang xử lý...",
+                "sLengthMenu": "Xem _MENU_ mục",
+                "sZeroRecords": "Không có dữ liệu!",
+                "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                "sInfoPostFix": "",
+                "sSearch": "Tìm kiếm nhanh:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "Đầu",
+                    "sPrevious": "Trước",
+                    "sNext": "Tiếp",
+                    "sLast": "Cuối"
+
+                }
+            },
+            columns: [
+                { title: "ID chi tiết", "visible": false },
+                { title: "ID nhập kho", "visible": false },
+                { title: "Ngày nghỉ", className: "dt-center", },
+                { title: "Tác vụ" }
+            ],
+            "columnDefs": [{
+                "targets": -1,
+                "width": "8%",
+                "data": null,
+                "defaultContent":
+                    //  "<a id=" + "suact" + " data-toggle=" + "modal" + " data-target=" + "#chitiet" + " >" + " <i class= " + "'fas fa-plus-circle'" + " ></i>" + "<span> &ensp;</span></a>"
+                    "<a id=" + "xoact" + " >" + " <i class= " + "'fas fa-trash-alt'" + " ></i> " + "</a> "
+
+            }],
+            "order": [[0, "asc"]]
+        });
+        $('#' + table_id + ' tbody').on('click', '#xoact', function () {
+            var data = table.row($(this).parents('tr')).data();
+            Selected_ID2 = data[0];
+            if (confirm("Bạn có muốn xóa ?")) {
+                DeleteCT(data[0]);
+            }
+        });
+    };
+    var id_hang = 0;
+    var Danh_Muc = [];
+    function themchitiet() {
+        var ngay = $('#ngay_nghi').val();
+        if (ngay == "") {
+            alert("Vui lòng nhập ngày có lịch trống!")
+        } else {
+            var obj = { Ngay_nghi: ngay };
+            Danh_Muc.push(obj);
+            $('#ngay_nghi').val("");
+            $('#gio_nghi').val("");
+
+            id_hang++;
+            var x, y, z, textnode;
+            x = document.createElement("tr");
+            x.style.wordWrap = "break-word";
+
+            x.setAttribute("id", "TRh" + id_hang);
+
+            z = document.createElement("td");
+            z.setAttribute("id", "TDh" + id_hang);
+            x.appendChild(z);
+
+            z = document.createElement("td");
+            z.style.width = "15%";
+            z.style.textAlign = "center";
+            textnode = document.createTextNode(ngay);
+            z.appendChild(textnode);
+            x.appendChild(z);
+
+            var td = document.createElement("td");
+            z = document.createElement("a");
+            y = document.createElement("i");
+            y.setAttribute("class", "fas fa-times");
+            z.appendChild(y);
+            z.setAttribute("id", "ah" + id_hang);
+            z.onclick = function () { delete_danhmuc(this); };
+
+            td.appendChild(z);
+            x.appendChild(td);
+            document.getElementById("Danh_muc_hang").appendChild(x);
+            document.getElementById("TDh" + id_hang).innerHTML = document.getElementById("TRh" + id_hang).rowIndex;
+            if (Danh_Muc.length > 0)
+                document.getElementById("ListDM").style.visibility = "visible";
+            else
+                document.getElementById("ListDM").style.visibility = "hidden";
+        }
+    }
+    function delete_danhmuc(btn) {
+        // debugger
+        var id = btn.id.slice(2);
+        id2 = "TRh" + id;
+        debugger
+        var currentRow = $(btn).closest("tr");
+        var col1 = currentRow.find("td:eq(2)").text();
+        var text = document.getElementById(id2).innerText;
+        var pos = Danh_Muc.map(function (e) {
+            console.log(e)
+            return e.Ngay_nghi;
+
+        }).indexOf(col1);
+        if (Danh_Muc.length > 1) {
+            document.getElementById("Danh_muc_hang").removeChild(document.getElementById(id2));
+            Danh_Muc.splice(pos, 1);
+        }
+        else {
+            document.getElementById("Danh_muc_hang").innerHTML = "";
+            Danh_Muc = [];
+            document.getElementById("ListDM").style.visibility = "hidden";
+        }
+
+        table_ct = document.getElementById("table_ct");
+        for (i = 1; i < table_ct.rows.length; i++) {
+            table_ct.rows[i].cells[0].innerHTML = i;
+        }
+
+    }
+    function insertCT() {
+
+        if ($('#ngay_nghi').val() == "") {
+            alert("Vui lòng chọn ngày nghỉ trước")
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "/Home/LichNghi_insert",
+                dataType: "json",
+                data: {
+                    'Ngay_nghi': $('#ngay_nghi').val(),
+                },
+                success: function (dt) {
+                    if (dt == "false") {
+                        $('#ngay_nghi').val('');
+                        alert("Ngày đã được thêm trước đó, vui lòng chọn ngày khác");
+                    } else {
+                        ListLichNghi();
+                        $('#ngay_nghi').val('');
+                    }
+
+                },
+                complete: function (data) {
+
+                },
+                error: function (err) {
+                }
+            });
+        }
+    }
+    function DeleteCT() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/LichNghi_delete",
+            dataType: "json",
+            data: {
+                "IDchitiet": Selected_ID2
+            },
+            success: function (dt) {
+                ListLichNghi();
+            },
+            complete: function (data) {
+
+            },
+            error: function (err) {
+            }
+        });
+    }
+</script>

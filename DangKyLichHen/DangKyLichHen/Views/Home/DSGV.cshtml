@@ -1,0 +1,442 @@
+﻿
+@{
+    ViewBag.Title = "DSGV";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Content/bower_components/ckeditor/ckeditor.js"></script>
+<script src="~/Content/bower_components/ckeditor/styles.js"></script>
+<section class="content">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            @*<li class="breadcrumb-item"><a href="/Home/">Trang chủ</a></li>*@
+            <li class="breadcrumb-item active" aria-current="page">Quản lý giảng viên</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="form-group row">
+            <div class="col-md-12">
+                <div class="box">
+                    <button id="btnaddnews" onclick="clear()" class="btn btn-primary" data-toggle="modal" data-target="#addnews" style="float:right ; margin-top: 18px; margin-right:18px; margin-bottom:6px"><i class="fas fa-plus"></i> Thêm mới</button>
+                    <div class="box-body">
+                        <table id="maintable" class="table table-striped table-hover" style="width:100%;z-index: -1"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="modal" data-backdrop="static" data-keyboard="false" id="capnhat" style="overflow-y:scroll;">
+            <div class="modal-dialog" style="width: 50%;height:100%;margin-left: 25%;margin-top:10%">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#3c8dbc;color:#fff">
+                        <h4 style="text-align:center" class="modal-title" id="view">Sửa thông tin<button type="button" class="close" data-dismiss="modal" style="color:#000000">&times</button></h4>
+                    </div>
+                    <div class="box-body">
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Mã giảng viên(*):</label>
+                                        <input type="text" class="form-control" id="Ma_giang_vien_u">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tên giảng viên(*):</label>
+                                        <input type="text" class="form-control" id="Ten_giang_vien_u">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>SĐT:</label>
+                                        <input type="tel" class="form-control" id="SDT_u">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Email:</label>
+                                        <input type="email" class="form-control" id="Email_u">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Ngày sinh(*):</label>
+                                        <input type="date" class="form-control" id="Ngay_sinh_u">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Giới tính:</label>
+                                        <select class="form-control" id="Gioi_tinh_u">
+                                            <option value="Nam" selected>Nam</option>
+                                            <option value="Nữ">Nữ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <label for="staticEmail" class="col-sm-2 col-form-label" style="text-align:right">Actice:</label>
+                                    <div class="col-md-4">
+                                        <input type="checkbox" id="Active_u">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>UserName:</label>
+                                        <input type="text" class="form-control" id="UserName_u">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>PassWord:</label>
+                                        <input type="text" class="form-control" id="PassWord_u">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="Update()">Lưu</button>
+                        <button type="button" class="btn btn-danger" onclick="" data-dismiss="modal" style="display:inline">Đóng</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal" data-backdrop="static" data-keyboard="false" id="addnews" style="overflow-y:scroll;">
+            <div class="modal-dialog" style="width: 50%;height:100%;margin-left: 25%;margin-top:10%">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header" style="background-color:#3c8dbc;color:#fff">
+                        <h4 style="text-align:center" class="modal-title" id="view">Thêm mới<button type="button" class="close" data-dismiss="modal" style="color:#000000">X</button></h4>
+                    </div>
+                    <div class="box-body">
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Mã giảng viên(*):</label>
+                                        <input type="text" class="form-control" id="Ma_giang_vien_a">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tên giảng viên(*):</label>
+                                        <input type="text" class="form-control" id="Ten_giang_vien_a">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>SĐT:</label>
+                                        <input type="tel" class="form-control" id="SDT_a">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Email:</label>
+                                        <input type="email" class="form-control" id="Email_a">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Ngày sinh(*):</label>
+                                        <input type="date" class="form-control" id="Ngay_sinh_a">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Giới tính:</label>
+                                        <select class="form-control" id="Gioi_tinh_a">
+                                            <option value="Nam" selected>Nam</option>
+                                            <option value="Nữ">Nữ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <label for="staticEmail" class="col-sm-2 col-form-label" style="text-align:right">Actice:</label>
+                                    <div class="col-md-4">
+                                        <input type="checkbox" id="Active_a">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>UserName:</label>
+                                        <input type="text" class="form-control" id="UserName_a">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>PassWord:</label>
+                                        <input type="text" class="form-control" id="PassWord_a">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="Insert()">Lưu</button>
+                        <button type="button" class="btn btn-danger" onclick="" data-dismiss="modal" style="display:inline">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="/Content/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/Content/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- DataTables -->
+<script src="/Content/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/Content/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="/Content/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/Content/bower_components/fastclick/lib/fastclick.js"></script>
+<script src="/Content/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script>
+    var DSSV;
+    var Selected_ID;
+    function khoitao() {
+    }
+    $(document).ready(function () {
+        GiaoVien_load_list();
+    });
+    function GiaoVien_load_list() {
+        $.ajax({
+            type: "GET",
+            url: "/Home/GiaoVien_load_list",
+            dataType: "json",
+            success: function (dt) {
+                for (var i = 0; i < dt.length; i++) {
+                    dt[i].Ngay_sinh = dt[i].Ngay_sinh.substring(0, 10);
+                }
+                DSSV = dt;
+                document.getElementById("maintable").innerHTML = "";
+                filldata('maintable', dt);
+            }
+        });
+    }
+    function filldata(table_id, data) {
+        var dataSet = new Array;
+
+        $.each(data,
+            function (index, value) {
+                var tempArray = new Array;
+                for (var o in value) {
+                    tempArray.push(value[o]);
+                }
+                dataSet.push(tempArray);
+            });
+
+        table = $('#' + table_id + '').DataTable({
+            'select': true,
+            "destroy": true,
+            data: dataSet,
+            "oLanguage": {
+
+                "sProcessing": "Đang xử lý...",
+                "sLengthMenu": "Xem _MENU_ mục",
+                "sZeroRecords": "Không có dữ liệu!",
+                "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                "sInfoPostFix": "",
+                "sSearch": "Tìm kiếm nhanh:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "Đầu",
+                    "sPrevious": "Trước",
+                    "sNext": "Tiếp",
+                    "sLast": "Cuối"
+
+                }
+            },
+            columns: [
+                { title: "ID", "visible": false },
+                { title: "Mã giảng viên" },
+                { title: "Họ tên" },
+                { title: "Giới tính" },
+                { title: "Ngày sinh" },
+                { title: "Email" },
+                { title: "SĐT" },
+                { title: "Active" },
+                { title: "UserName" },
+                { title: "PassWord" },
+                { title: "Thao tác" }
+            ],
+            "columnDefs": [{
+                "targets": -1,
+                "width": "8%",
+                "data": null,
+                "defaultContent":
+                    "<a id=" + "suact" + " data-toggle=" + "modal" + " data-target=" + "#capnhat" + " >" + " <i class= " + "'fas fa-edit'" + " ></i>" + "<span> &ensp;</span></a>"
+                    + "<a id=" + "xoact" + " >" + " <i class= " + "'fas fa-trash-alt'" + " ></i> " + "</a> "
+
+            }],
+            "order": [[0, "asc"]]
+        });
+        $('#' + table_id + ' tbody').on('click', '#suact', function () {
+            var data = table.row($(this).parents('tr')).data();
+            $('#Ma_giang_vien_u').val(data[1]);
+            $('#Ten_giang_vien_u').val(data[2]);
+            $('#Gioi_tinh_u').val(data[3]);
+            $('#Ngay_sinh_u').val(data[4].split("/").reverse().join("-"));
+            $('#Email_u').val(data[5]);
+            $('#SDT_u').val(data[6]);
+            if (data[7] == "1") {
+                $("#Active_u").prop('checked', true);
+            }
+            $('#UserName_u').val(data[8]);
+            $('#PassWord_u').val(data[9]);
+            Selected_ID = data[0];
+        });
+        $('#' + table_id + ' tbody').on('click', '#xoact', function () {
+            var data = table.row($(this).parents('tr')).data();
+            Selected_ID = data[0];
+            if (confirm("Bạn có muốn xóa ?")) {
+                Delete();
+            }
+        });
+    };
+    function Update() {
+      
+        var act = $("#Active_u").is(":checked");
+        var check;
+        if (act == true) { check = "1" } else { check = "0" }
+        if ($('#Ma_giang_vien_u').val() == "" || $('#Ten_giang_vien_u').val() == "" || $('#Ngay_sinh_u').val() == "") {
+            alert("Mã, tên và ngày sinh không được để trống")
+        } else {     
+            $.ajax({
+                type: "POST",
+                url: "/Home/GiaoVien_update",
+                dataType: "json",
+                data: {
+                    'ID': Selected_ID,
+                    'Ma_gv': $('#Ma_giang_vien_u').val(),
+                    'Ten_gv': $('#Ten_giang_vien_u').val(),
+                    'Gioi_tinh': $('#Gioi_tinh_u').val(),
+                    'Ngay_sinh': $('#Ngay_sinh_u').val(),
+                    'Email': $('#Email_u').val(),
+                    'Sđt': $('#SDT_u').val(),
+                    'Active': check,
+                    'UserName': $('#UserName_u').val(),
+                    'PassWord': $('#PassWord_u').val(),
+                },
+                success: function (dt) {
+                    GiaoVien_load_list();
+                    alert(dt);
+                    $('#Ma_giao_vien_u').val('');
+                    $('#Ten_giang_vien_u').val('');
+                    $('#Gioi_tinh_u').val('');
+                    $('#Ngay_sinh_u').val('');
+                    $('#Email_u').val('');
+                    $('#SDT_u').val('');
+                    $("#Active_u").prop('checked', false);
+                    $('#UserName_u').val('');
+                    $('#PassWord_u').val('');
+                    $('#capnhat').modal('hide');
+                },
+                complete: function (data) {
+
+                },
+                error: function (err) {
+                }
+            });
+        }
+    }
+    
+    function clear() {
+        $('#Ma_giang_vien_a').val('');
+        $('#Ten_giang_vien_a').val('');
+        $('#Gioi_tinh_a').val('');
+        $('#Ngay_sinh_a').val('');
+        $('#Email_a').val('');
+        $('#SDT_a').val('');
+        $("#Active_a").prop('checked', false);
+        $('#UserName_a').val('');
+        $('#PassWord_a').val('');
+    }
+    function Insert() {       
+        var act = $("#Active_a").is(":checked");
+        var check;
+        if (act == true) { check = "1" } else { check = "0" }
+        if ($('#Ma_giang_vien_a').val() == "" || $('#Ten_giang_vien_a').val() == "" || $('#Ngay_sinh_a').val() == "") {
+            alert("Mã, tên và ngày sinh không được để trống")
+        } else {          
+            $.ajax({
+                type: "POST",
+                url: "/Home/GiaoVien_insert",
+                dataType: "json",
+                data: {
+                    'Ma_gv': $('#Ma_giang_vien_a').val(),
+                    'Ten_gv': $('#Ten_giang_vien_a').val(),
+                    'Gioi_tinh': $('#Gioi_tinh_a').val(),
+                    'Ngay_sinh': $('#Ngay_sinh_a').val(),
+                    'Email': $('#Email_a').val(),
+                    'Sđt': $('#SDT_a').val(),
+                    'Active': check,
+                    'UserName': $('#UserName_a').val(),
+                    'PassWord': $('#PassWord_a').val(),
+                },
+                success: function (dt) {
+                    GiaoVien_load_list();
+                    alert(dt);
+                    clear();
+                    $('#addnews').modal('hide');
+                },
+                complete: function (data) {
+
+                },
+                error: function (err) {
+                }
+            });
+
+        }
+    }
+    function Delete() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/GiaoVien_delete",
+            dataType: "json",
+            data: {
+                "ID": Selected_ID
+            },
+            success: function (dt) {
+                GiaoVien_load_list();
+                alert(dt);
+            },
+            complete: function (data) {
+
+            },
+            error: function (err) {
+            }
+        });
+    }
+</script>

@@ -1,0 +1,255 @@
+﻿
+@{
+    ViewBag.Title = "TraCuu";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<script src="~/Content/bower_components/ckeditor/ckeditor.js"></script>
+<script src="~/Content/bower_components/ckeditor/styles.js"></script>
+<section class="content">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Quản lý sinh viên</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="form-group row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-body">
+                        <table id="maintable" class="table table-striped table-hover" style="width:100%;z-index: -1"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="modal" data-backdrop="static" data-keyboard="false" id="delete" style="overflow-y:scroll;">
+            <div class="modal-dialog" style="width: 50%;height:100%;margin-left: 25%;margin-top:10%">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#3c8dbc;color:#fff">
+                        <h4 style="text-align:center" class="modal-title" id="view">Từ chối duyệt<button type="button" class="close" data-dismiss="modal" style="color:#000000">&times</button></h4>
+                    </div>
+                    <div class="box-body">
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Lý do từ chối:</label>
+                                        <textarea rows="4" type="text" class="form-control" id="Ly_do"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="Delete()">Lưu</button>
+                        <button type="button" class="btn btn-danger" onclick="" data-dismiss="modal" style="display:inline">Đóng</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="/Content/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/Content/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- DataTables -->
+<script src="/Content/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/Content/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="/Content/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/Content/bower_components/fastclick/lib/fastclick.js"></script>
+<script src="/Content/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script>
+    var DSLH;
+    var Selected_ID;
+    var check;
+    function khoitao() {
+    }
+    $(document).ready(function () {
+           $.ajax({
+                    type: "GET",
+                    url: "/Home/Get_GV",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.USER_NAME == null) {
+                             window.location.href = "@Url.Action("GiaoVien", "Login")";
+                        } else {
+                            LichHen_load_list();
+                        }
+                    }
+                });
+       
+    });
+    function LichHen_load_list() {
+        $.ajax({
+            type: "GET",
+            url: "/Home/LichHen_load_ID",
+            dataType: "json",
+            success: function (dt) {
+                for (var i = 0; i < dt.length; i++) {
+                    dt[i].Ngay_hen = dt[i].Ngay_hen.substring(0, 10);
+                    if (dt[i].Active == "0") {
+                        dt[i].Active = "Chờ xác nhận"
+                    }
+                    if (dt[i].Active == "1") {
+                        dt[i].Active = "Đã xác nhận"
+                    }
+                    if (dt[i].Active == "2") {
+                        dt[i].Active = "Từ chối"
+                    }
+                }
+                DSLH = dt;
+                document.getElementById("maintable").innerHTML = "";
+                filldata('maintable', dt);
+            }
+        });
+    }
+    function filldata(table_id, data) {
+        var dataSet = new Array;
+
+        $.each(data,
+            function (index, value) {
+                var tempArray = new Array;
+                for (var o in value) {
+                    tempArray.push(value[o]);
+                }
+                dataSet.push(tempArray);
+            });
+
+        table = $('#' + table_id + '').DataTable({
+            'select': true,
+            "destroy": true,
+            data: dataSet,
+            "oLanguage": {
+
+                "sProcessing": "Đang xử lý...",
+                "sLengthMenu": "Xem _MENU_ mục",
+                "sZeroRecords": "Không có dữ liệu!",
+                "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                "sInfoPostFix": "",
+                "sSearch": "Tìm kiếm nhanh:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "Đầu",
+                    "sPrevious": "Trước",
+                    "sNext": "Tiếp",
+                    "sLast": "Cuối"
+
+                }
+            },
+            columns: [
+                { title: "ID", "visible": false },
+                { title: "ID", "visible": false },
+                { title: "Nội dung hẹn " },
+                { title: "ID sinh viên", "visible": false },
+                { title: "Tên sinh viên" },
+                { title: "ID giáo viên", "visible": false },
+                { title: "Tên giáo viên" },
+                { title: "Ngày hẹn" },
+                { title: "Giờ hẹn" },
+                { title: "Trạng thái" },
+                { title: "Lý do huỷ" },
+                { title: "Thao tác" }
+            ],
+            "columnDefs": [{
+                "targets": -1,
+                "width": "8%",
+                "data": null,
+                "defaultContent":
+                    "<a id=" + "suact" + " >" + " <i class= " + "'fas fa-check'" + " ></i>" + "<span> &ensp;</span></a>"
+                    + "<a id=" + "xoact" + " data-toggle=" + "modal" + " data-target=" + "#delete" + " >" + " <i class= " + "'fas fa-trash-alt'" + " ></i> " + "</a> "
+
+            }],
+            "order": [[0, "asc"]]
+        });
+        $('#' + table_id + ' tbody').on('click', '#suact', function () {
+            var data = table.row($(this).parents('tr')).data();
+            Selected_ID = data[0];
+
+            if (data[9] == "Chờ xác nhận") {
+                Update(data[3]);
+            } else if (data[9] == "Đã xác nhận") {
+                alert("Lịch hẹn đã được xác nhận không thể sửa");
+            } else {
+                alert("Lịch hẹn đã bị từ chối");
+            }
+
+        });
+        $('#' + table_id + ' tbody').on('click', '#xoact', function () {
+            var data = table.row($(this).parents('tr')).data();
+            Selected_ID = data[0];
+            if (data[9] == "Chờ xác nhận") {
+                check = 0;
+            } else if (data[9] == "Đã xác nhận") {
+                check = 1;
+            } else {
+                check = 1;
+            }
+        });
+    };
+    function Update(ID_sv) {
+        $.ajax({
+            type: "POST",
+            url: "/Home/LichHen_updateGV",
+            dataType: "json",
+            data: {
+                'ID_lich_hen': Selected_ID,
+                'Active': 1,
+                'Ly_do_huy': '',
+                'ID_sv': ID_sv
+            },
+            success: function (dt) {
+                LichHen_load_list();
+                alert(dt);
+
+            },
+            complete: function (data) {
+
+            },
+            error: function (err) {
+            }
+        });
+
+    }
+
+    function Delete() {
+        if (check == 0) {
+            $.ajax({
+                type: "POST",
+                url: "/Home/LichHen_updateGV",
+                dataType: "json",
+                data: {
+                    "ID_lich_hen": Selected_ID,
+                    'Active': 2,
+                    'Ly_do_huy': $('#Ly_do').val()
+                },
+                success: function (dt) {
+                    LichHen_load_list();
+                    alert(dt);
+                    $('#delete').modal('hide');
+                },
+                complete: function (data) {
+
+                },
+                error: function (err) {
+                }
+            });
+        } else {
+            alert("Không thể từ chối phiếu này");
+            $('#delete').modal('hide');
+        }
+    }
+</script>

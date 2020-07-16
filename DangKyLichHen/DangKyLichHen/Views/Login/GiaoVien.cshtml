@@ -1,0 +1,223 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Đăng nhập hệ thống</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="/Content/Login/images/icons/favicon.ico" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Content/Login/vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Content/Login/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Content/Login/fonts/iconic/css/material-design-iconic-font.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Content/Login/vendor/animate/animate.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Content/Login/vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Content/Login/vendor/animsition/css/animsition.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Content/Login/vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Content/Login/vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/Content/Login/css/util.css">
+    <link rel="stylesheet" type="text/css" href="/Content/Login/css/main.css">
+    <!--===============================================================================================-->
+    <style>
+        .loader {
+            border: 6px solid #f3f3f3; /* Light grey */
+            border-top: 6px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ui loading raised segment" id="body_l">
+        <div class="limiter">
+            <div class="container-login100" style="background-image: url('/Content/dist/img/bg_dep.jpg');">
+                <div class="wrap-login100">
+                    <form class="login100-form validate-form">
+
+                        @* <img src="~/Content/dist/img/Logo1.png" style="margin-left:0; width:90%" />*@
+
+
+                        <span class="login100-form-title p-b-34 p-t-10">
+
+                        </span>
+
+                        <div class="wrap-input100 validate-input" data-validate="Nhập tài khoản">
+                            <input class="input100" id="usr" type="text" name="username" placeholder="Tài khoản">
+                            <span class="focus-input100" data-placeholder="&#xf207;"></span>
+                        </div>
+
+                        <div class="wrap-input100 validate-input" data-validate="Nhập mật khẩu">
+                            <input class="input100" id="pwd" type="password" name="pass" placeholder="Mật khẩu">
+                            <span class="focus-input100" data-placeholder="&#xf191;"></span>
+                        </div>
+                        <div class="container-login100-form-btn">
+                            <button class="login100-form-btn" type="button" onclick="dangnhap()">
+                                Đăng nhập
+                            </button>
+                        </div>
+                        <div class="text-center p-t-50">
+                            <a class="txt1" href="" data-toggle="modal" data-target="#GetPassWord">
+                                Quên mật khẩu?
+                            </a><br />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" data-backdrop="static" data-keyboard="false" id="GetPassWord">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <label class="control-label" for="inputSuccess"> Tài khoản đăng nhập:</label>
+                            <input type="text" class="form-control" id="taikhoan" placeholder="Nhập tài khoản hiện tại của bạn">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="inputSuccess">Địa chỉ email:</label>
+                            <input type="text" class="form-control" id="email" placeholder="Nhập địa chỉ email mà bạn đã đăng ký">
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="capmatkhau()">Cấp lại mật khẩu</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="/Content/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <script src="/Content/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script>
+    function close_loading_screen() {
+        $('#loadingmodal').modal('hide');
+    }
+
+    function open_loading_screen() {
+        $('#loadingmodal').modal('show');
+    }
+
+    function capmatkhau() {
+
+        var email = $('#email').val();
+        var taikhoan = $('#taikhoan').val();
+        if (email == "" || taikhoan == "") {
+            alert("Bạn cần nhập đầy đủ thông tin!");
+        } else {
+            var r = confirm(
+                "Bạn có muốn chúng tôi thay đổi mật khẩu hiện tại và gửi mật khẩu mới đến địa chỉ email mà bạn đã đăng ký với chúng tôi?")
+            if (r) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Login/GetPassWordGV",
+                    data: {
+                        'UserName': taikhoan,
+                        'EmailAdress': email
+                    },
+                    success: function(data) {
+                        alert(data);
+                    }
+                });
+
+            };
+        }
+    }
+
+    function dangnhap() {
+        var usr = $('#usr').val();
+        var pwd = $('#pwd').val();
+        if (usr == "" || pwd == "") {
+            alert("Bạn cần nhập đầy đủ tài khoản và mật khẩu");
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "/Login/LoginGV",
+                dataType: "json",
+                data: { 'UserName': usr, 'UserPassword': pwd },
+                success: function(data) {
+                    if (data.Result == "False") {
+                        alert(data.Message);
+                    } else {
+                        window.location.href = "@Url.Action("TraCuu", "GiangVien")";
+                    }
+                },
+                error: function(err) {
+                    alert('Lỗi kết nối');
+
+                }
+            });
+        }
+    }
+
+    var dn = document.getElementById("pwd");
+    dn.addEventListener("keyup",
+        function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                dangnhap();
+            }
+
+        });
+
+
+    var dn1 = document.getElementById("usr");
+    dn1.addEventListener("keyup",
+        function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                dangnhap();
+            }
+        });
+    </script>
+
+    <div id="dropDownSelect1"></div>
+
+    <!--===============================================================================================-->
+    <script src="/Content/Login/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="/Content/Login/vendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="/Content/Login/vendor/bootstrap/js/popper.js"></script>
+    <script src="/Content/Login/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="/Content/Login/vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="/Content/Login/vendor/daterangepicker/moment.min.js"></script>
+    <script src="/Content/Login/vendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+    <script src="/Content/Login/vendor/countdowntime/countdowntime.js"></script>
+    <!--===============================================================================================-->
+    <script src="/Content/Login/js/main.js"></script>
+
+</body>
+</html>
